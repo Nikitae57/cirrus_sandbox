@@ -30,6 +30,7 @@ class MainFragment : Fragment() {
     override fun onAttach(context: Context) {
         initViewModel()
         super.onAttach(context)
+        val a  = 0
     }
 
     override fun onStart() {
