@@ -32,6 +32,8 @@ class MainFragment : Fragment() {
         super.onAttach(context)
     }
 
+    private fun a() {}
+
     override fun onStart() {
         observeViewModel()
         viewModel.startLoading()
