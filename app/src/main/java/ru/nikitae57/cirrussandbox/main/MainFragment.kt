@@ -34,6 +34,7 @@ class MainFragment : Fragment() {
 
     override fun onStart() {
         observeViewModel()
+        observeViewModel()
         viewModel.startLoading()
         super.onStart()
     }
