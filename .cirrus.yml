@@ -1,9 +1,12 @@
 container:
   image: cirrusci/android-sdk:29
-  cpu: 4
-  memory: 10G
+  cpu: 8
+  memory: 24G
 
 check_android_task:
+  name: Run Android instrumented tests
+  only_if: $CIRRUS_BRANCH == "main" || CIRRUS_PR != ""
+  skip: "!changesInclude('.cirrus.yml', '*.gradle', '*.gradle.kts', '**/*.gradle', '**/*.gradle.kts', '*.properties', '**/*.properties', '**/*.kt', '**/*.xml')"
   install_emulator_script:
     sdkmanager --install "system-images;android-29;default;x86_64"
   create_device_script:
@@ -15,7 +18,12 @@ check_android_task:
     -avd test
     -no-audio
     -no-window
+  assemble_instrumented_tests_script:
+    ./gradlew assembleDebugAndroidTest
   wait_for_emulator_script:
-    - adb wait-for-device
-    - adb shell input keyevent 82
+    adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 3; done; input keyevent 82'
+  disable_animations_script: |
+    adb shell settings put global window_animation_scale 0.0
+    adb shell settings put global transition_animation_scale 0.0
+    adb shell settings put global animator_duration_scale 0.0
   check_script: ./gradlew check connectedCheck
