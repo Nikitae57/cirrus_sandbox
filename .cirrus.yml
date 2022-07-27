@@ -7,6 +7,8 @@ check_android_task:
     cpu: 8
     memory: 24G
 
+  licenses_script:
+    echo yes | sdkmanager --licenses
   accel_check_script:
     - sudo chown cirrus:cirrus /dev/kvm
     - emulator -accel-check
