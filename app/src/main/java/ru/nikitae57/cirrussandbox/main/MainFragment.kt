@@ -38,6 +38,10 @@ class MainFragment : Fragment() {
         super.onStart()
     }
 
+    private fun blank() {
+
+    }
+
     private fun initViewModel() {
         if (arguments?.getBoolean(IS_TEST_EXTRA) != true) {
             viewModel = ViewModelProvider(this, ViewModelsFactory(resources))[MainViewModel::class.java]
