@@ -29,6 +29,7 @@ class MainFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         initViewModel()
+        initViewModel()
         super.onAttach(context)
     }
 
