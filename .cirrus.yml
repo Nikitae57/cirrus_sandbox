@@ -7,7 +7,7 @@ check_android_task:
   install_emulator_script:
     sdkmanager --install "system-images;android-29;default;x86_64"
   create_device_script:
-    echo no | sdkmanager --list && avdmanager create avd --force
+    echo no | avdmanager create avd --force
     -n test
     -k "system-images;android-29;default;x86_64"
   start_emulator_background_script:
