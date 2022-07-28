@@ -1,6 +1,6 @@
 check_android_task:
   name: Run Android instrumented tests
-#  only_if: $CIRRUS_PR != '' && $CIRRUS_BASE_BRANCH == $CIRRUS_DEFAULT_BRANCH
+  only_if: $CIRRUS_PR != '' && '$CIRRUS_BASE_BRANCH' == '$CIRRUS_DEFAULT_BRANCH'
 
   container:
     image: cirrusci/android-sdk:30
