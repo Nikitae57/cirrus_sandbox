@@ -9,11 +9,6 @@ check_android_task:
 
   licenses_script:
     echo yes | sdkmanager --licenses
-  assemble_instrumented_tests_script:
-    ./gradlew assembleDebugAndroidTest
-#  accel_check_script:
-#    - sudo chown cirrus:cirrus /dev/kvm
-#    - emulator -accel-check
   install_emulator_script:
     sdkmanager --install "system-images;android-30;default;x86_64"
   create_device_script:
@@ -25,10 +20,12 @@ check_android_task:
     -avd test
     -no-audio
     -no-window
+  assemble_instrumented_tests_script:
+    ./gradlew assembleDebugAndroidTest
   wait_for_emulator_script:
     adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 3; done; input keyevent 82'
   disable_animations_script: |
     adb shell settings put global window_animation_scale 0.0
     adb shell settings put global transition_animation_scale 0.0
     adb shell settings put global animator_duration_scale 0.0
-  check_script: ./gradlew check connectedCheck
+  check_script: ./gradlew connectedDebugAndroidTest

@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
+@Suppress("RepeatOnLifecycleWrongUsage")
 fun <T> LifecycleOwner.observeStateFlow(flow: Flow<T>, collector: FlowCollector<T>) {
     lifecycleScope.launch {
         repeatOnLifecycle(Lifecycle.State.STARTED) {
