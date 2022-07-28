@@ -8,6 +8,11 @@ check_android_task:
     cpu: 6
     memory: 24G
 
+  tmp_script:
+    echo "$CIRRUS_BASE_BRANCH"
+    echo "$CIRRUS_PR"
+    echo "$CIRRUS_DEFAULT_BRANCH"
+
   licenses_script:
     echo yes | sdkmanager --licenses
   install_emulator_script:
