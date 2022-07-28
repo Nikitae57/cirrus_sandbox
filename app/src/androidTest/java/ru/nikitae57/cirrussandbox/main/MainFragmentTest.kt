@@ -33,7 +33,7 @@ class MainFragmentTest {
     fun givenInitialStateWhenThenShouldDisplayEmptyScreen() = runTest {
         launch()
         MainScreen {
-            button { isNotDisplayed() }
+            button { isDisplayed() }
             label { isNotDisplayed() }
         }
         _stateFlow.emit(State.Loading)
