@@ -1,6 +1,5 @@
 check_android_task:
   name: Run Android instrumented tests
-  allow_failures: true
 
   container:
     image: cirrusci/android-sdk:30
@@ -30,6 +29,6 @@ check_android_task:
     adb shell settings put global transition_animation_scale 0.0
     adb shell settings put global animator_duration_scale 0.0
   check_script: ./gradlew connectedDebugAndroidTest
-  always:
+  on_failure :
     publish_report_artifacts:
-      path: "app/build/reports/androidTests/connected/*"
+      path: "app/build/reports/androidTests/connected/**/*"
