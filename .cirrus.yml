@@ -2,7 +2,7 @@ check_android_task:
   name: Run Android instrumented tests
 
   container:
-    image: cirrusci/android-sdk:29
+    image: cirrusci/android-sdk:30
     kvm: true
     cpu: 8
     memory: 24G
@@ -12,19 +12,19 @@ check_android_task:
   accel_check_script:
     - sudo chown cirrus:cirrus /dev/kvm
     - emulator -accel-check
+  assemble_instrumented_tests_script:
+    ./gradlew assembleDebugAndroidTest
   install_emulator_script:
-    sdkmanager --install "system-images;android-29;default;x86_64"
+    sdkmanager --install "system-images;android-30;default;x86_64"
   create_device_script:
     echo no | avdmanager create avd --force
     -n test
-    -k "system-images;android-29;default;x86_64"
+    -k "system-images;android-30;default;x86_64"
   start_emulator_background_script:
     $ANDROID_HOME/emulator/emulator
     -avd test
     -no-audio
     -no-window
-  assemble_instrumented_tests_script:
-    ./gradlew assembleDebugAndroidTest
   wait_for_emulator_script:
     adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 3; done; input keyevent 82'
   disable_animations_script: |
