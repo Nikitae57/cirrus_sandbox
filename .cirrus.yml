@@ -4,16 +4,16 @@ check_android_task:
   container:
     image: cirrusci/android-sdk:30
     kvm: true
-    cpu: 8
+    cpu: 6
     memory: 24G
 
   licenses_script:
     echo yes | sdkmanager --licenses
-  accel_check_script:
-    - sudo chown cirrus:cirrus /dev/kvm
-    - emulator -accel-check
   assemble_instrumented_tests_script:
     ./gradlew assembleDebugAndroidTest
+#  accel_check_script:
+#    - sudo chown cirrus:cirrus /dev/kvm
+#    - emulator -accel-check
   install_emulator_script:
     sdkmanager --install "system-images;android-30;default;x86_64"
   create_device_script:
