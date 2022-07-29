@@ -1,9 +1,18 @@
+check_if_ui_tests_required_task:
+  check_if_ui_tests_required_script:
+    if [[ "${CIRRUS_PR_LABELS}" == *"no_ui_testing_required"* ]]; then\
+    echo "DOESNT_REQUIRE_UI_TESTING=true" >> $CIRRUS_ENV\
+    else echo "DOESNT_REQUIRE_UI_TESTING=false" >> $CIRRUS_ENV\
+    fi
+
 check_android_task:
   name: Run Android instrumented tests
-  only_if: $CIRRUS_PR != '' && $CIRRUS_BASE_BRANCH == $CIRRUS_DEFAULT_BRANCH
-
+  depends_on:
+    check_if_ui_tests_required
   env:
     SCREENSHOTS_ROOT_DIR: /data/data/ru.nikitae57.cirrussandbox/files/screenshots
+  skip: $DOESNT_REQUIRE_UI_TESTING
+  only_if: $CIRRUS_PR != '' && $CIRRUS_BASE_BRANCH == $CIRRUS_DEFAULT_BRANCH
 
   container:
     image: cirrusci/android-sdk:30
@@ -32,13 +41,9 @@ check_android_task:
     adb shell settings put global window_animation_scale 0.0
     adb shell settings put global transition_animation_scale 0.0
     adb shell settings put global animator_duration_scale 0.0
-  check_script: ./gradlew connectedDebugAndroidTest
+  check_script: ./gradlew connectedDebugAndroidTest || mkdir screenshots && adb root && for i in {1..5}; do adb pull $SCREENSHOTS_ROOT_DIR screenshots && break || sleep 5; done && return 1
   on_failure :
     publish_report_artifacts:
       path: "app/build/reports/androidTests/connected/**/*"
-    pull_screenshots_script:
-      mkdir screenshots
-      adb root
-      adb pull $SCREENSHOTS_ROOT_DIR screenshots
-    publish_screenshots_script:
-      path: "$SCREENSHOTS_ROOT_DIR/**/*"
+    publish_screenshots_artifacts:
+      path: "screenshots/**/*"
