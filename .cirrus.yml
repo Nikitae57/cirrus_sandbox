@@ -40,5 +40,5 @@ check_android_task:
       mkdir screenshots
       adb root
       adb pull $SCREENSHOTS_ROOT_DIR screenshots
-    publish_screenshots_script:
+    publish_screenshots_artifacts:
       path: "$SCREENSHOTS_ROOT_DIR/**/*"
