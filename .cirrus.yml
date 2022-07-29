@@ -2,7 +2,7 @@ check_android_task:
   name: Run Android instrumented tests
   env:
     SCREENSHOTS_ROOT_DIR: /data/data/ru.nikitae57.cirrussandbox/files/screenshots
-  skip: $CIRRUS_PR_LABELS =~ '.*no_ui_testing_required.*'
+  skip: $CIRRUS_PR_LABELS =~ ".*no_ui_testing_required.*"
   only_if: $CIRRUS_PR != '' && $CIRRUS_BASE_BRANCH == 'master'
 
   container:
@@ -10,7 +10,8 @@ check_android_task:
     kvm: true
     cpu: 6
     memory: 24G
-
+  asdas_script:
+    echo $CIRRUS_PR_LABELS
   licenses_script:
     echo yes | sdkmanager --licenses
   install_emulator_script:
