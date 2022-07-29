@@ -1,8 +1,15 @@
 package ru.nikitae57.cirrussandbox.main
 
+import android.Manifest
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.app.launchActivity
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.GrantPermissionRule
+import com.kaspersky.kaspresso.annotations.ScreenShooterTest
+import com.kaspersky.kaspresso.files.resources.ResourcesRootDirsProvider
+import com.kaspersky.kaspresso.files.resources.impl.DefaultResourcesRootDirsProvider
+import com.kaspersky.kaspresso.testcases.api.testcase.DocLocScreenshotTestCase
 import io.github.kakaocup.kakao.screen.Screen
 import io.mockk.every
 import io.mockk.mockk
@@ -12,14 +19,24 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.test.runTest
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import ru.nikitae57.cirrussandbox.CustomRootDirsProvider
 import ru.nikitae57.cirrussandbox.utils.State
 import ru.nikitae57.cirrussandbox.utils.TestFragmentActivity
 
 @OptIn(ExperimentalCoroutinesApi::class)
-@RunWith(AndroidJUnit4::class)
-class MainFragmentTest {
+class MainFragmentTest : DocLocScreenshotTestCase(
+    locales = "ru",
+    resourcesRootDirsProvider = CustomRootDirsProvider(ApplicationProvider.getApplicationContext())
+) {
+
+    @get:Rule
+    val runtimePermissionRule: GrantPermissionRule = GrantPermissionRule.grant(
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.READ_EXTERNAL_STORAGE
+    )
 
     private val _stateFlow: MutableStateFlow<State<MainStateModel>> = MutableStateFlow(State.Initial)
     private val _eventFLow = Channel<Boolean>().receiveAsFlow()
@@ -32,11 +49,12 @@ class MainFragmentTest {
     @Test
     fun givenInitialStateWhenThenShouldDisplayEmptyScreen() = runTest {
         launch()
+
+        captureScreenshot("initial_state")
         MainScreen {
             button { isNotDisplayed() }
             label { isNotDisplayed() }
         }
-        _stateFlow.emit(State.Loading)
     }
 
     @Test
@@ -51,6 +69,7 @@ class MainFragmentTest {
         launch()
         _stateFlow.emit(State.Loading)
 
+        captureScreenshot("loading_state")
         MainScreen {
             progressBar { isDisplayed() }
             label { isNotDisplayed() }
@@ -64,6 +83,7 @@ class MainFragmentTest {
         val state = State.Error(message = "Message", retryLabel = "Retry label") {}
         _stateFlow.emit(state)
 
+        captureScreenshot("error_state")
         MainScreen {
             progressBar { isNotDisplayed() }
             label { hasText(state.message.toString()) }
@@ -78,6 +98,7 @@ class MainFragmentTest {
         val state = State.Success(stateModel)
         _stateFlow.emit(state)
 
+        captureScreenshot("success_state")
         MainScreen {
             progressBar { isNotDisplayed() }
             label { hasText(stateModel.labelText.toString()) }
@@ -86,25 +107,35 @@ class MainFragmentTest {
     }
 
     @Test
-    fun example() = runTest {
+    fun example() = run {
         launch()
 
-        _stateFlow.emit(State.Loading)
+        step("Step 1 - loading") {
+            runTest {
+                _stateFlow.emit(State.Loading)
 
-        MainScreen {
-            progressBar { isDisplayed() }
-            label { isNotDisplayed() }
-            button { isNotDisplayed() }
+                captureScreenshot("step_1")
+                MainScreen {
+                    progressBar { isDisplayed() }
+                    label { isNotDisplayed() }
+                    button { isNotDisplayed() }
+                }
+            }
         }
 
-        val stateModel = MainStateModel(labelText = "label text", buttonText = "button text") {}
-        val state = State.Success(stateModel)
-        _stateFlow.emit(state)
+        step("Step 2 - success state") {
+            runTest {
+                val stateModel = MainStateModel(labelText = "label text", buttonText = "button text") {}
+                val state = State.Success(stateModel)
+                _stateFlow.emit(state)
 
-        MainScreen {
-            progressBar { isNotDisplayed() }
-            label { hasText(stateModel.labelText.toString()) }
-            button { hasText(stateModel.buttonText.toString()) }
+                captureScreenshot("step_2")
+                MainScreen {
+                    progressBar { isNotDisplayed() }
+                    label { hasText(stateModel.labelText.toString()) }
+                    button { hasText(stateModel.buttonText.toString()) }
+                }
+            }
         }
     }
 

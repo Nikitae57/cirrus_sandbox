@@ -2,6 +2,9 @@ check_android_task:
   name: Run Android instrumented tests
   only_if: $CIRRUS_PR != '' && $CIRRUS_BASE_BRANCH == $CIRRUS_DEFAULT_BRANCH
 
+  env:
+    SCREENSHOTS_ROOT_DIR: /data/data/ru.nikitae57.cirrussandbox/files/screenshots
+
   container:
     image: cirrusci/android-sdk:30
     kvm: true
@@ -33,5 +36,9 @@ check_android_task:
   on_failure :
     publish_report_artifacts:
       path: "app/build/reports/androidTests/connected/**/*"
-    echo_artifacts_url_script:
-      echo "artifacts url - https://api.cirrus-ci.com/v1/artifact/build/$CIRRUS_BUILD_ID/publish_report.zip" && return 1
+    pull_screenshots_script:
+      mkdir screenshots
+      adb root
+      adb pull $SCREENSHOTS_ROOT_DIR screenshots
+    publish_screenshots_script:
+      path: "$SCREENSHOTS_ROOT_DIR/**/*"
