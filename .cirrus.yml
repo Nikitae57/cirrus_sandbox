@@ -1,11 +1,10 @@
 check_android_task:
   name: Run Android instrumented tests
-  skip: |
-    if [[ "$CIRRUS_PR_LABELS" == *"no_ui_testing_required"* ]]; then return true else return false fi
-  only_if: $CIRRUS_PR != '' && $CIRRUS_BASE_BRANCH == $CIRRUS_DEFAULT_BRANCH
-
   env:
     SCREENSHOTS_ROOT_DIR: /data/data/ru.nikitae57.cirrussandbox/files/screenshots
+    DOESNT_REQUIRE_UI_TESTING: [[ "$CIRRUS_PR_LABELS" == *"no_ui_testing_required"* ]]
+  skip: $DOESNT_REQUIRE_UI_TESTING
+  only_if: $CIRRUS_PR != '' && $CIRRUS_BASE_BRANCH == $CIRRUS_DEFAULT_BRANCH
 
   container:
     image: cirrusci/android-sdk:30
