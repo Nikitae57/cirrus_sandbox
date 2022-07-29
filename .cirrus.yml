@@ -1,5 +1,6 @@
 check_android_task:
   name: Run Android instrumented tests
+  skip:  [[ "$CIRRUS_PR_LABELS" == *"no_ui_testing_required"* ]]
   only_if: $CIRRUS_PR != '' && $CIRRUS_BASE_BRANCH == $CIRRUS_DEFAULT_BRANCH
 
   env:
