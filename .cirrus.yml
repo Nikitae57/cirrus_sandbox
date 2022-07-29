@@ -1,3 +1,9 @@
+container:
+  image: cirrusci/android-sdk:30
+  kvm: true
+  cpu: 6
+  memory: 24G
+
 check_if_ui_tests_required_task:
   check_if_ui_tests_required_script:
     if [[ "${CIRRUS_PR_LABELS}" == *"no_ui_testing_required"* ]]; then\
@@ -13,12 +19,6 @@ check_android_task:
     SCREENSHOTS_ROOT_DIR: /data/data/ru.nikitae57.cirrussandbox/files/screenshots
   skip: $DOESNT_REQUIRE_UI_TESTING
   only_if: $CIRRUS_PR != '' && $CIRRUS_BASE_BRANCH == $CIRRUS_DEFAULT_BRANCH
-
-  container:
-    image: cirrusci/android-sdk:30
-    kvm: true
-    cpu: 6
-    memory: 24G
 
   licenses_script:
     echo yes | sdkmanager --licenses
