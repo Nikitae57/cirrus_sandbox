@@ -10,6 +10,9 @@ check_android_task:
     kvm: true
     cpu: 6
     memory: 24G
+
+  asds_script:
+    echo $CIRRUS_PR_LABELS
   licenses_script:
     echo yes | sdkmanager --licenses
   install_emulator_script:
