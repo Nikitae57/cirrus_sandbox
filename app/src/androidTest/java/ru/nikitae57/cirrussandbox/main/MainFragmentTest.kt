@@ -49,7 +49,7 @@ class MainFragmentTest : DocLocScreenshotTestCase(
     @Test
     fun givenInitialStateWhenThenShouldDisplayEmptyScreen() = runTest {
         launch()
-
+        val i = 0
         captureScreenshot("initial_state")
         MainScreen {
             button { isDisplayed() }
