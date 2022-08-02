@@ -52,7 +52,7 @@ class MainFragmentTest : DocLocScreenshotTestCase(
 
         captureScreenshot("initial_state")
         MainScreen {
-            button { isDisplayed() }
+            button { isNotDisplayed() }
             label { isNotDisplayed() }
         }
     }
