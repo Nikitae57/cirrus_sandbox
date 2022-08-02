@@ -2,7 +2,8 @@ check_android_task:
   name: Run Android instrumented tests
   env:
     SCREENSHOTS_ROOT_DIR: /data/data/ru.nikitae57.cirrussandbox/files/screenshots
-  skip: $CIRRUS_PR_LABELS =~ ".*no_ui_testing_required.*"
+#  skip: $CIRRUS_PR_LABELS =~ ".*no_ui_testing_required.*"
+  required_pr_labels: passed-initial-review
   only_if: $CIRRUS_PR != '' && $CIRRUS_BASE_BRANCH == 'master'
 
   container:
